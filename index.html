@@ -289,3 +289,278 @@
 
   .card-tag{
     font-family:'Space Mono', monospace;
+    font-size:0.68rem;
+    color:var(--ember);
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    display:block;
+    margin-bottom:4px;
+  }
+
+  .card-num{
+    font-family:'Space Mono', monospace;
+    font-size:0.72rem;
+    color:var(--ash);
+  }
+
+  .play{
+    position:absolute;
+    top:20px; right:20px;
+    width:42px;height:42px;
+    border-radius:50%;
+    border:1px solid rgba(243,237,226,0.35);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(11,11,13,0.4);
+    transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+  }
+
+  .play svg{width:14px;height:14px;fill:var(--bone);}
+
+  .card:hover .card-bg{transform:scale(1.14);filter:brightness(0.34);}
+  .card:hover .play{background:var(--ember);border-color:var(--ember);transform:scale(1.06);}
+
+  .card:focus-visible, .chip:focus-visible, a:focus-visible{
+    outline:2px solid var(--ember);
+    outline-offset:3px;
+  }
+
+  .note{
+    margin-top:26px;
+    font-family:'Space Mono', monospace;
+    font-size:0.72rem;
+    color:var(--ash);
+    line-height:1.6;
+  }
+
+  /* ---------- CONTACT ---------- */
+
+  .contact{
+    padding: 70px clamp(20px, 6vw, 72px) 50px;
+    border-top:1px solid var(--line);
+  }
+
+  .contact-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    margin-bottom:34px;
+    flex-wrap:wrap;
+    gap:16px;
+  }
+
+  h2.contact-title{
+    font-family:'Bebas Neue', sans-serif;
+    font-weight:400;
+    font-size:clamp(2rem, 4vw, 2.8rem);
+    color:var(--bone);
+  }
+
+  .chips{
+    display:flex;
+    flex-wrap:wrap;
+    gap:14px;
+  }
+
+  .chip{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:16px 20px;
+    border:1px solid var(--line);
+    border-radius:3px;
+    text-decoration:none;
+    color:var(--bone);
+    background:var(--charcoal);
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+    min-width:250px;
+    flex:1;
+  }
+
+  .chip:hover{
+    border-color:var(--ember);
+    background:linear-gradient(120deg, rgba(255,95,31,0.14), rgba(194,65,12,0.06));
+    transform:translateY(-2px);
+  }
+
+  .chip svg{width:20px;height:20px;fill:var(--ember);flex-shrink:0;}
+
+  .chip-text{display:flex;flex-direction:column;gap:2px;}
+
+  .chip-label{
+    font-family:'Space Mono', monospace;
+    font-size:0.64rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--ash);
+  }
+
+  .chip-value{
+    font-size:0.92rem;
+    font-weight:500;
+    color:var(--bone);
+    word-break:break-all;
+  }
+
+  footer{
+    padding:26px clamp(20px, 6vw, 72px) 40px;
+    display:flex;
+    justify-content:space-between;
+    font-family:'Space Mono', monospace;
+    font-size:0.68rem;
+    color:var(--ash);
+    letter-spacing:0.05em;
+    border-top:1px solid var(--line);
+    flex-wrap:wrap;
+    gap:10px;
+  }
+
+  footer b{color:var(--ember);}
+
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    h1.title, .subtitle{animation:none; opacity:1; transform:none;}
+    .card-bg, .play, .chip{transition:none;}
+  }
+</style>
+</head>
+<body>
+
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+
+    <div class="hero-top">
+      <span class="mark">VG<b>·</b>08</span>
+      <span class="mark">EDITOR DE VÍDEOS — GAMING</span>
+    </div>
+
+    <div class="hero-inner">
+      <h1 class="title">VICTOR G</h1>
+      <p class="subtitle">Cortes rápidos <span>·</span> ritmo de jogo <span>·</span> edição gaming</p>
+    </div>
+
+    <div class="scrub">
+      <span class="scrub-time">00:00:00:00</span>
+      <div class="scrub-track">
+        <div class="scrub-ticks">
+          <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
+        <div class="scrub-head"></div>
+      </div>
+      <span class="scrub-time">REEL — 04 CLIPS</span>
+    </div>
+    <p class="scroll-cue">↓ ver trabalhos</p>
+  </section>
+
+  <section class="work" id="trabalhos">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">Timeline</span>
+        <h2 class="section-title">Trabalhos</h2>
+      </div>
+      <span class="section-count">04 / 04<br>clipes selecionados</span>
+    </div>
+
+    <div class="grid">
+
+      <a class="card" href="#" aria-label="Assistir edição 01">
+        <div class="card-bg"></div>
+        <div class="card-overlay"></div>
+        <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+        <div class="card-meta">
+          <div>
+            <span class="card-tag">Montagem · Ranked</span>
+            <span class="card-title">Highlight Reel 01</span>
+          </div>
+          <span class="card-num">C01</span>
+        </div>
+      </a>
+
+      <a class="card" href="#" aria-label="Assistir edição 02">
+        <div class="card-bg"></div>
+        <div class="card-overlay"></div>
+        <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+        <div class="card-meta">
+          <div>
+            <span class="card-tag">Cinemático</span>
+            <span class="card-title">Trailer / Abertura</span>
+          </div>
+          <span class="card-num">C02</span>
+        </div>
+      </a>
+
+      <a class="card" href="#" aria-label="Assistir edição 03">
+        <div class="card-bg"></div>
+        <div class="card-overlay"></div>
+        <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+        <div class="card-meta">
+          <div>
+            <span class="card-tag">Short-form</span>
+            <span class="card-title">Clipes Semanais</span>
+          </div>
+          <span class="card-num">C03</span>
+        </div>
+      </a>
+
+      <a class="card" href="#" aria-label="Assistir edição 04">
+        <div class="card-bg"></div>
+        <div class="card-overlay"></div>
+        <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+        <div class="card-meta">
+          <div>
+            <span class="card-tag">Sync / Ritmo</span>
+            <span class="card-title">Montage de Jogadas</span>
+          </div>
+          <span class="card-num">C04</span>
+        </div>
+      </a>
+
+    </div>
+
+    <p class="note">* estes 4 espaços são placeholders — troque o <code>href</code> de cada <code>.card</code> pelo link do vídeo (YouTube, Twitter, Drive) e a <code>background-image</code> pela thumbnail real de cada edição.</p>
+  </section>
+
+  <section class="contact" id="contato">
+    <div class="contact-head">
+      <div>
+        <span class="eyebrow">Contato</span>
+        <h2 class="contact-title">Fala comigo</h2>
+      </div>
+    </div>
+
+    <div class="chips">
+      <a class="chip" href="https://discord.com/users/" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M20.3 4.4A19.8 19.8 0 0 0 15.6 3c-.2.4-.5.9-.7 1.3a18 18 0 0 0-5.8 0A9 9 0 0 0 8.4 3a19.7 19.7 0 0 0-4.7 1.4C1 9 .3 13.5.6 18a20 20 0 0 0 5.9 2.9c.5-.6.9-1.3 1.2-2a13 13 0 0 1-1.9-.9l.5-.4a14.2 14.2 0 0 0 11.4 0l.5.4c-.6.4-1.2.6-1.9.9.3.7.7 1.4 1.2 2a20 20 0 0 0 5.9-2.9c.4-5.1-.9-9.6-3.1-13.6ZM8.7 15.3c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Zm6.6 0c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Z"/></svg>
+        <span class="chip-text">
+          <span class="chip-label">Discord</span>
+          <span class="chip-value">dextermorgan08938</span>
+        </span>
+      </a>
+
+      <a class="chip" href="mailto:ytanormalguy@gmail.com">
+        <svg viewBox="0 0 24 24"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm1.8 2 7.2 5.4L19.2 7H4.8ZM4 8.6V18h16V8.6l-8 6-8-6Z"/></svg>
+        <span class="chip-text">
+          <span class="chip-label">Email</span>
+          <span class="chip-value">ytanormalguy@gmail.com</span>
+        </span>
+      </a>
+
+      <a class="chip" href="https://twitter.com/Nerd_editorFR" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M22 5.9c-.7.3-1.5.6-2.3.7a4 4 0 0 0 1.8-2.2c-.8.5-1.6.8-2.6 1a4 4 0 0 0-6.9 3.6A11.4 11.4 0 0 1 3.8 4.8a4 4 0 0 0 1.3 5.4c-.7 0-1.3-.2-1.9-.5v.1a4 4 0 0 0 3.3 4 4 4 0 0 1-1.8.1 4 4 0 0 0 3.8 2.8A8.1 8.1 0 0 1 2 18.6a11.4 11.4 0 0 0 6.2 1.8c7.5 0 11.6-6.2 11.6-11.6v-.5c.8-.6 1.5-1.3 2.2-2.1Z"/></svg>
+        <span class="chip-text">
+          <span class="chip-label">Twitter</span>
+          <span class="chip-value">@Nerd_editorFR</span>
+        </span>
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    <span><b>VICTOR G</b> — edição de vídeos / gaming</span>
+    <span>feito em 2026</span>
+  </footer>
+
+</body>
+</html>
