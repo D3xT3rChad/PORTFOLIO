@@ -95,29 +95,6 @@
       linear-gradient(100deg, rgba(194,65,12,0.22) 0%, rgba(11,11,13,0) 55%);
   }
 
-  .hero-top{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    padding: 28px clamp(20px, 6vw, 72px);
-    position:absolute;
-    top:0; left:0; right:0;
-  }
-
-  .mark{
-    font-family:'Space Mono', monospace;
-    font-size:0.78rem;
-    letter-spacing:0.15em;
-    color:var(--bone);
-    border:1px solid var(--line);
-    padding:6px 12px;
-    border-radius:2px;
-    background:rgba(11,11,13,0.35);
-    backdrop-filter: blur(4px);
-  }
-
-  .mark b{color:var(--ember);font-weight:700;}
-
   .hero-inner{
     display:flex;
     flex-direction:column;
@@ -155,7 +132,7 @@
     to{opacity:1; transform:translateY(0);}
   }
 
-  /* timecode scrub bar - signature element */
+  /* timecode scrub bar - signature element, tracks page scroll progress */
   .scrub{
     position:absolute;
     bottom:64px;
@@ -171,6 +148,7 @@
     font-size:0.75rem;
     color:var(--ash);
     white-space:nowrap;
+    min-width:8ch;
   }
 
   .scrub-track{
@@ -187,6 +165,16 @@
     left:0;right:0;top:50%;
     height:1px;
     background:var(--line);
+  }
+
+  .scrub-fill{
+    position:absolute;
+    left:0; top:50%;
+    height:1px;
+    width:0%;
+    background:var(--ember);
+    transform:translateY(-50%);
+    transition:width 0.05s linear;
   }
 
   .scrub-ticks{
@@ -206,13 +194,14 @@
 
   .scrub-head{
     position:absolute;
-    left:22%;
+    left:0%;
     top:50%;
     transform:translate(-50%,-50%);
     width:12px;height:12px;
     background:var(--ember);
     border-radius:2px;
     box-shadow:0 0 0 5px rgba(255,95,31,0.15);
+    transition:left 0.05s linear;
   }
 
   .scroll-cue{
@@ -242,9 +231,10 @@
 
   .section-head{
     display:flex;
-    justify-content:space-between;
-    align-items:flex-end;
-    gap:24px;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    gap:6px;
     margin-bottom:48px;
     border-bottom:1px solid var(--line);
     padding-bottom:22px;
@@ -256,13 +246,6 @@
     font-size:clamp(2.4rem, 5vw, 3.6rem);
     letter-spacing:0.01em;
     color:var(--bone);
-  }
-
-  .section-count{
-    font-family:'Space Mono', monospace;
-    font-size:0.78rem;
-    color:var(--ash);
-    text-align:right;
   }
 
   .grid{
@@ -284,8 +267,27 @@
     .grid-shorts{max-width:360px;}
   }
 
-  .card{
+  .card-frame{
     position:relative;
+  }
+
+  .card-frame--long{ aspect-ratio:16/9; }
+  .card-frame--short{ aspect-ratio:9/16; }
+
+  .card-glow{
+    position:absolute;
+    inset:-16%;
+    z-index:0;
+    pointer-events:none;
+    background:radial-gradient(closest-side, rgba(255,95,31,0.4) 0%, rgba(194,65,12,0.16) 55%, rgba(255,95,31,0) 75%);
+    filter:blur(22px);
+    opacity:0.9;
+  }
+
+  .card{
+    position:absolute;
+    inset:0;
+    z-index:1;
     border-radius:4px;
     overflow:hidden;
     background:var(--charcoal);
@@ -294,9 +296,6 @@
     isolation:isolate;
     transition:transform 0.35s cubic-bezier(.2,.7,.3,1), box-shadow 0.35s ease, border-color 0.35s ease;
   }
-
-  .card--long{ aspect-ratio:16/9; }
-  .card--short{ aspect-ratio:9/16; }
 
   .card:hover{
     transform:translateY(-6px);
@@ -492,7 +491,7 @@
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto;}
     h1.title, .subtitle, .scroll-cue{animation:none; opacity:1; transform:none;}
-    .card-bg, .play, .chip, .card, .reveal, .stagger-item{transition:none;}
+    .card-bg, .play, .chip, .card, .reveal, .stagger-item, .scrub-head, .scrub-fill{transition:none;}
     .reveal, .stagger-item{opacity:1; transform:none;}
   }
 </style>
@@ -503,23 +502,19 @@
     <div class="hero-bg"></div>
     <div class="hero-overlay"></div>
 
-    <div class="hero-top">
-      <span class="mark">VG<b>·</b>08</span>
-      <span class="mark">VIDEO EDITOR — GAMING</span>
-    </div>
-
     <div class="hero-inner">
       <h1 class="title">VICTOR G</h1>
       <p class="subtitle">Professional Video Editor</p>
     </div>
 
     <div class="scrub">
-      <span class="scrub-time">00:00:00:00</span>
+      <span class="scrub-time" id="scrubTimeLeft">00:00:00:00</span>
       <div class="scrub-track">
+        <div class="scrub-fill" id="scrubFill"></div>
         <div class="scrub-ticks">
           <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
         </div>
-        <div class="scrub-head"></div>
+        <div class="scrub-head" id="scrubHead"></div>
       </div>
       <span class="scrub-time">REEL — 04 CLIPS</span>
     </div>
@@ -528,38 +523,40 @@
 
   <section class="work" id="work">
     <div class="section-head reveal">
-      <div>
-        <span class="eyebrow">Timeline</span>
-        <h2 class="section-title">Works</h2>
-      </div>
-      <span class="section-count">04 / 04<br>clips selected</span>
+      <h2 class="section-title">Works</h2>
     </div>
 
     <div class="grid reveal-stagger">
 
-      <div class="card card--long stagger-item" data-video-id="bJekmzkIQCg" tabindex="0" role="button" aria-label="Play Long Form Games 01">
-        <div class="card-bg" style="background-image:url('https://img.youtube.com/vi/bJekmzkIQCg/maxresdefault.jpg');"></div>
-        <div class="card-overlay"></div>
-        <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
-        <div class="card-meta">
-          <div>
-            <span class="card-tag">Edit · Long Form Games</span>
-            <span class="card-title">Long Form Games 01</span>
+      <div class="card-frame card-frame--long stagger-item">
+        <div class="card-glow"></div>
+        <div class="card" data-video-id="bJekmzkIQCg" tabindex="0" role="button" aria-label="Play Long Form Games 01">
+          <div class="card-bg" style="background-image:url('https://img.youtube.com/vi/bJekmzkIQCg/hqdefault.jpg');"></div>
+          <div class="card-overlay"></div>
+          <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+          <div class="card-meta">
+            <div>
+              <span class="card-tag">Edit · Long Form Games</span>
+              <span class="card-title">Long Form Games 01</span>
+            </div>
+            <span class="card-num">C01</span>
           </div>
-          <span class="card-num">C01</span>
         </div>
       </div>
 
-      <div class="card card--long stagger-item" data-video-id="Jd5hYzcEsv0" tabindex="0" role="button" aria-label="Play Long Form Games 02">
-        <div class="card-bg" style="background-image:url('https://img.youtube.com/vi/Jd5hYzcEsv0/maxresdefault.jpg');"></div>
-        <div class="card-overlay"></div>
-        <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
-        <div class="card-meta">
-          <div>
-            <span class="card-tag">Edit · Long Form Games</span>
-            <span class="card-title">Long Form Games 02</span>
+      <div class="card-frame card-frame--long stagger-item">
+        <div class="card-glow"></div>
+        <div class="card" data-video-id="Jd5hYzcEsv0" tabindex="0" role="button" aria-label="Play Long Form Games 02">
+          <div class="card-bg" style="background-image:url('https://img.youtube.com/vi/Jd5hYzcEsv0/hqdefault.jpg');"></div>
+          <div class="card-overlay"></div>
+          <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+          <div class="card-meta">
+            <div>
+              <span class="card-tag">Edit · Long Form Games</span>
+              <span class="card-title">Long Form Games 02</span>
+            </div>
+            <span class="card-num">C02</span>
           </div>
-          <span class="card-num">C02</span>
         </div>
       </div>
 
@@ -569,29 +566,35 @@
 
     <div class="grid-shorts reveal-stagger">
 
-      <div class="card card--short stagger-item" data-video-id="Q9U-wJwrO4o" tabindex="0" role="button" aria-label="Play Weekly Clips">
-        <div class="card-bg" style="background-image:url('https://img.youtube.com/vi/Q9U-wJwrO4o/hqdefault.jpg');"></div>
-        <div class="card-overlay"></div>
-        <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
-        <div class="card-meta">
-          <div>
-            <span class="card-tag">Short-Form · Clips</span>
-            <span class="card-title">Weekly Clips</span>
+      <div class="card-frame card-frame--short stagger-item">
+        <div class="card-glow"></div>
+        <div class="card" data-video-id="Q9U-wJwrO4o" tabindex="0" role="button" aria-label="Play Weekly Clips">
+          <div class="card-bg" style="background-image:url('https://img.youtube.com/vi/Q9U-wJwrO4o/hqdefault.jpg');"></div>
+          <div class="card-overlay"></div>
+          <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+          <div class="card-meta">
+            <div>
+              <span class="card-tag">Short-Form · Clips</span>
+              <span class="card-title">Weekly Clips</span>
+            </div>
+            <span class="card-num">C03</span>
           </div>
-          <span class="card-num">C03</span>
         </div>
       </div>
 
-      <div class="card card--short stagger-item" data-video-id="hD5x-nBWgPc" tabindex="0" role="button" aria-label="Play Viral Clips">
-        <div class="card-bg" style="background-image:url('https://img.youtube.com/vi/hD5x-nBWgPc/hqdefault.jpg');"></div>
-        <div class="card-overlay"></div>
-        <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
-        <div class="card-meta">
-          <div>
-            <span class="card-tag">Short-Form · Clips</span>
-            <span class="card-title">Viral Clips</span>
+      <div class="card-frame card-frame--short stagger-item">
+        <div class="card-glow"></div>
+        <div class="card" data-video-id="hD5x-nBWgPc" tabindex="0" role="button" aria-label="Play Viral Clips">
+          <div class="card-bg" style="background-image:url('https://img.youtube.com/vi/hD5x-nBWgPc/hqdefault.jpg');"></div>
+          <div class="card-overlay"></div>
+          <div class="play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+          <div class="card-meta">
+            <div>
+              <span class="card-tag">Short-Form · Clips</span>
+              <span class="card-title">Viral Clips</span>
+            </div>
+            <span class="card-num">C04</span>
           </div>
-          <span class="card-num">C04</span>
         </div>
       </div>
 
@@ -639,6 +642,7 @@
   </footer>
 
   <script>
+    // click-to-play inline video (stays on-site)
     document.querySelectorAll('.card[data-video-id]').forEach(function(card){
       function playVideo(){
         if (card.classList.contains('playing')) return;
@@ -661,6 +665,7 @@
       });
     });
 
+    // scroll reveal, re-triggers both scrolling down and back up
     var revealTargets = document.querySelectorAll('.reveal, .reveal-stagger');
     var io = new IntersectionObserver(function(entries){
       entries.forEach(function(entry){
@@ -668,6 +673,33 @@
       });
     }, { threshold: 0.15 });
     revealTargets.forEach(function(el){ io.observe(el); });
+
+    // scrub bar tracks scroll progress through the hero section
+    var heroEl = document.querySelector('.hero');
+    var scrubHead = document.getElementById('scrubHead');
+    var scrubFill = document.getElementById('scrubFill');
+    var scrubTimeLeft = document.getElementById('scrubTimeLeft');
+
+    function pad(n){ return String(n).padStart(2, '0'); }
+
+    function updateScrub(){
+      var heroHeight = heroEl.offsetHeight || window.innerHeight;
+      var progress = Math.min(Math.max((window.scrollY || window.pageYOffset) / heroHeight, 0), 1);
+      var pct = 2 + progress * 96; // keep the marker inside the track
+      scrubHead.style.left = pct + '%';
+      scrubFill.style.width = pct + '%';
+
+      var totalFrames = Math.round(progress * 720); // 24fps over ~30s of scroll feel
+      var ff = totalFrames % 24;
+      var totalSeconds = Math.floor(totalFrames / 24);
+      var ss = totalSeconds % 60;
+      var mm = Math.floor(totalSeconds / 60);
+      scrubTimeLeft.textContent = pad(mm) + ':' + pad(ss) + ':00:' + pad(ff);
+    }
+
+    window.addEventListener('scroll', updateScrub, { passive: true });
+    window.addEventListener('resize', updateScrub);
+    updateScrub();
   </script>
 
 </body>
